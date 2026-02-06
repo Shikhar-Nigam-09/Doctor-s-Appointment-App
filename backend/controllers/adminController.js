@@ -60,7 +60,18 @@ console.log('FILE:', req.file)
         res.json({success:true, message:"Doctor Added"})
     }catch(error){
             console.log(error)
-            res.json({success:false,message:error})
+            if (error.code === 11000) {
+  return res.status(400).json({
+    success: false,
+    message: 'Doctor with this email already exists'
+  })
+}
+
+res.status(500).json({
+  success: false,
+  message: 'Failed to add doctor'
+})
+
     }
 }
 
@@ -85,4 +96,19 @@ const loginAdmin= async(req,res)=>{
     }
 }
 
-export {addDoctor,loginAdmin}
+//API to get all doctors list
+
+const allDoctors= async(req,res)=>{
+    try{
+
+        const doctors=await doctorModel.find({}).select('-password')
+        res.json({success:true,doctors})
+    }catch(error)
+
+    {
+        console.log(error)
+        res.json({success:false,message:error})
+    }
+}
+
+export {addDoctor,loginAdmin,allDoctors}

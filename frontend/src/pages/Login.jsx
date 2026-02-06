@@ -1,14 +1,50 @@
 import React, { useState } from 'react'
-
+import { useContext } from 'react'
+import { AppContext } from '../context/AppContext'
+import axios from 'axios'
+import { toast } from 'react-toastify'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 const Login = () => {
+
+  const {backendURL,token,setToken}=useContext(AppContext)
+  const navigate=useNavigate()
 
   const [state, setState] = useState('Sign Up')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
 
+
+
   const onSubmitHandler = async (e) => {
     e.preventDefault()
+
+    try {
+      if(state==='Sign Up'){
+        const {data}=await axios.post(backendURL+'/api/user/register',{name,password,email})
+
+        if(data.success)
+        {
+          localStorage.setItem('token',data.token)
+          setToken(data.token)
+        }else{
+          toast.error(data.message)
+        }
+      }else{
+        const {data}=await axios.post(backendURL+'/api/user/login',{password,email})
+
+        if(data.success)
+        {
+          localStorage.setItem('token',data.token)
+          setToken(data.token)
+        }else{
+          toast.error(data.message)
+        }
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
 
     if (state === 'Sign Up') {
       console.log('Creating account:', { name, email, password })
@@ -16,6 +52,13 @@ const Login = () => {
       console.log('Logging in:', { email, password })
     }
   }
+
+  useEffect(()=>{
+    if(token)
+    {
+        navigate('/')
+    }
+  },[token])
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center">

@@ -69,7 +69,7 @@ const AddDoctor = () => {
 
   const onSubmitHandler = async (event) => {
     event.preventDefault()
-
+ try{
     if (!docImg) {
       toast.error('Image not selected')
       return
@@ -97,10 +97,28 @@ const AddDoctor = () => {
     if(data.success)
     {
         toast.success(data.message)
+        setDocImg(false)
+        setName('')
+        setPassword('')
+        setEmail('')
+        setAddress1('')
+        setAddress2('')
+        setAbout('')
+        setFees('')
+        setDegree('')
 
     }else{
         toast.error(data.message)
     }
+}
+catch(error)
+{
+    
+    console.log(error)
+    toast.error(
+    error.response?.data?.message || 'Something went wrong'
+  )
+}
     // backend logic will be added later
   }
 
@@ -251,7 +269,7 @@ const AddDoctor = () => {
           className="
             mt-8 bg-[#5f6FFF] text-white
             px-10 py-2.5 rounded-full text-sm font-medium
-            shadow-md hover:shadow-lg hover:opacity-95
+            shadow-md hover:shadow-lg hover:opacity-80
             transition
           "
         >
