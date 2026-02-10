@@ -1,11 +1,8 @@
 import jwt from 'jsonwebtoken'
 
-// user authentication middleware
 const authUser = async (req, res, next) => {
   try {
-    console.log(req.headers)
-    const { token } = req.headers
-    
+    const token = req.headers.token
 
     if (!token) {
       return res.json({
@@ -14,12 +11,13 @@ const authUser = async (req, res, next) => {
       })
     }
 
-    const token_decode = jwt.verify(token, process.env.JWT_SECRET)
+    // ✅ decode token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
-    req.body.userId=token_decode.id
+    // ✅ attach userId to request
+    req.userId = decoded.id
 
     next()
-
   } catch (error) {
     console.log(error)
     res.json({
@@ -30,4 +28,3 @@ const authUser = async (req, res, next) => {
 }
 
 export default authUser
-

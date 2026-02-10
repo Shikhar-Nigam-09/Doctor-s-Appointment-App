@@ -1,9 +1,36 @@
 import React, { useContext } from 'react'
 import { AppContext } from '../context/AppContext'
+import { useState } from 'react'
+import axios from 'axios'
+import { useEffect } from 'react'
+import { toast } from 'react-toastify'
 
 const MyAppointments = () => {
 
-  const { doctors } = useContext(AppContext)
+  const {backendURL,token } = useContext(AppContext)
+
+  const [appointments,setAppointments]=useState([])
+
+  const getUserAppointments =async()=>{
+    try {
+      
+      const {data}=await axios.get(backendURL+'/api/user/appointments',{headers:{token:token}})
+
+      if(data.success){
+        setAppointments(data.appointments.reverse())
+        console.log(data.appointments)
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error(error.message)
+    }
+  }
+
+  useEffect(()=>{
+    if(token){
+      getUserAppointments()
+    }
+  },[token])
 
   return (
     <div className="md:mx-10 mt-10">
@@ -16,7 +43,7 @@ const MyAppointments = () => {
       {/* Appointments List */}
       <div className="space-y-6">
 
-        {doctors.slice(0, 3).map((item, index) => (
+        {appointments.map((item, index) => (
           <div
             key={index}
             className="flex flex-col sm:flex-row gap-6 items-start sm:items-center
@@ -29,26 +56,26 @@ const MyAppointments = () => {
               {/* Doctor Image */}
               <img
                 className="w-24 h-24 rounded-lg object-cover bg-blue-50"
-                src={item.image}
-                alt={item.name}
+                src={item.docData.image}
+                alt={item.docData.name}
               />
 
               {/* Doctor Details */}
               <div className="text-sm text-gray-600">
                 <p className="text-base font-medium text-gray-800">
-                  {item.name}
+                  {item.docData.name}
                 </p>
-                <p className="mb-2">{item.speciality}</p>
+                <p className="mb-2">{item.docData.speciality}</p>
 
                 <p className="font-medium text-gray-700">Address:</p>
-                <p>{item.address.line1}</p>
-                <p>{item.address.line2}</p>
+                <p>{item.docData.address.line1}</p>
+                <p>{item.docData.address.line2}</p>
 
                 <p className="mt-2">
                   <span className="font-medium text-gray-700">
                     Date & Time:
                   </span>{' '}
-                  25 July, 2024 | 8:30 PM
+                  {item.slotDate} | {item.slotTime}
                 </p>
               </div>
 
