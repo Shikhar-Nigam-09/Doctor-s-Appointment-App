@@ -78,17 +78,28 @@ const Doctors = () => {
         {filteredDoctors.map((item) => (
           <div
             key={item._id}
-            onClick={() => navigate(`/appointment/${item._id}`)}
+            onClick={() => {
+  if (!item.available) return
+  navigate(`/appointment/${item._id}`)
+}}
             className="border border-blue-200 rounded-xl overflow-hidden cursor-pointer
             hover:-translate-y-2 hover:shadow-lg transition-all duration-300"
           >
             <img className="bg-blue-50 w-full" src={item.image} alt={item.name} />
 
             <div className="p-4">
-              <div className="flex items-center gap-2 text-sm text-green-500">
-                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                <p>Available</p>
-              </div>
+              <div
+               className={`flex items-center gap-2 text-sm 
+                   ${item.available ? 'text-green-500' : 'text-red-500'}
+                           `           }
+                                        >
+                 <span
+                 className={`w-2 h-2 rounded-full 
+                  ${item.available ? 'bg-green-500' : 'bg-red-500'}
+                  `}
+                  ></span>
+                  <p>{item.available ? 'Available' : 'Unavailable'}</p>
+                </div>
 
               <p className="font-medium mt-1">{item.name}</p>
               <p className="text-sm text-gray-600">{item.speciality}</p>
