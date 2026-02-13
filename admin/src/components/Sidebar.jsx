@@ -2,9 +2,11 @@ import { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import { AdminContext } from '../context/AdminContext'
 import { assets } from '../assets/assets'
+import { DoctorContext } from '../context/DoctorContext'
 
 const Sidebar = () => {
   const { aToken } = useContext(AdminContext)
+  const {dToken}=useContext(DoctorContext)
 
   return (
     <div className="min-h-screen bg-white border-r">
@@ -20,7 +22,7 @@ const Sidebar = () => {
             }
           >
             <img src={assets.home_icon} alt="" className="w-5" />
-            <p className="text-sm font-medium">Dashboard</p>
+            <p className="text-sm font-medium hidden md:block">Dashboard</p>
           </NavLink>
 
           {/* Appointments */}
@@ -32,7 +34,7 @@ const Sidebar = () => {
             }
           >
             <img src={assets.appointment_icon} alt="" className="w-5" />
-            <p className="text-sm font-medium">Appointments</p>
+            <p className="text-sm font-medium hidden md:block">Appointments</p>
           </NavLink>
 
           {/* Add Doctor */}
@@ -44,7 +46,7 @@ const Sidebar = () => {
             }
           >
             <img src={assets.add_icon} alt="" className="w-5" />
-            <p className="text-sm font-medium">Add Doctor</p>
+            <p className="text-sm font-medium hidden md:block">Add Doctor</p>
           </NavLink>
 
           {/* Doctors List */}
@@ -56,7 +58,51 @@ const Sidebar = () => {
             }
           >
             <img src={assets.people_icon} alt="" className="w-5" />
-            <p className="text-sm font-medium">Doctors List</p>
+            <p className="text-sm font-medium hidden md:block">Doctors List</p>
+          </NavLink>
+
+        </ul>
+      )}
+
+      {dToken && (
+        <ul className="pt-6 text-[#515151]">
+
+          {/* Dashboard */}
+          <NavLink
+            to="/doctor-dashboard"
+            className={({ isActive }) =>
+              `flex items-center gap-3 py-3.5 px-6 md:px-9 md:min-w-72 cursor-pointer
+              ${isActive ? 'bg-gray-300 border-r-4 border-[#5f6FFF]' : ''}`
+            }
+          >
+            <img src={assets.home_icon} alt="" className="w-5" />
+            <p className="text-sm font-medium hidden md:block">Dashboard</p>
+          </NavLink>
+
+          {/* Appointments */}
+          <NavLink
+            to="/doctor-appointment"
+            className={({ isActive }) =>
+              `flex items-center gap-3 py-3.5 px-6 md:px-9 md:min-w-72 cursor-pointer
+              ${isActive ? 'bg-gray-300 border-r-4 border-[#5f6FFF]' : ''}`
+            }
+          >
+            <img src={assets.appointment_icon} alt="" className="w-5" />
+            <p className="text-sm font-medium hidden md:block">Appointments</p>
+          </NavLink>
+
+          
+
+          {/* Profile */}
+          <NavLink
+            to="/doctor-profile"
+            className={({ isActive }) =>
+              `flex items-center gap-3 py-3.5 px-6 md:px-9 md:min-w-72 cursor-pointer
+              ${isActive ? 'bg-gray-300 border-r-4 border-[#5f6FFF]' : ''}`
+            }
+          >
+            <img src={assets.people_icon} alt="" className="w-5" />
+            <p className="text-sm font-medium hidden md:block">Profile</p>
           </NavLink>
 
         </ul>
