@@ -84,7 +84,7 @@ const Dashboard = () => {
                                  bg-red-100 text-red-600">
                   Cancelled
                 </span>
-              ) : (
+              ) : item.isCompleted ? (<p className="text-green-500 font-medium text-sm">Completed </p>) :(
                 <span className="px-3 py-1 rounded-full
                                  text-xs font-medium
                                  bg-green-100 text-green-600">

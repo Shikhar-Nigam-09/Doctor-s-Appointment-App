@@ -117,7 +117,7 @@ const AllAppointments = () => {
                 <span className="text-red-500 font-medium text-sm">
                   Cancelled
                 </span>
-              ) : (
+              ) : item.isCompleted ? (<p className="text-green-500 font-medium text-sm">Completed </p>) :(
                 <button
                   disabled={loadingId === item._id}
                   onClick={() => cancelAppointment(item._id)}

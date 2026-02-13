@@ -158,7 +158,7 @@ const MyAppointments = () => {
             {/* ACTIONS */}
             <div className="flex flex-col gap-3 min-w-40">
               {/* PAID */}
-              {item.payment && (
+              {item.payment && !item.isCompleted && (
                 <button
                   disabled
                   className="border border-green-300 bg-green-100 text-green-700
@@ -169,7 +169,7 @@ const MyAppointments = () => {
               )}
 
               {/* PAY NOW */}
-              {!item.cancelled && !item.payment && (
+              {!item.cancelled && !item.payment && !item.isCompleted && (
                 <button
                   onClick={() => appointmentRazorpay(item._id)}
                   className="border border-gray-300 text-gray-600 py-2 rounded-lg text-sm
@@ -180,7 +180,7 @@ const MyAppointments = () => {
               )}
 
               {/* CANCEL */}
-              {!item.cancelled && !item.payment && (
+              {!item.cancelled && !item.payment && !item.isCompleted &&(
                 <button
                   onClick={() => cancelAppointment(item._id)}
                   className="border border-gray-300 text-gray-600 py-2 rounded-lg text-sm
@@ -191,7 +191,7 @@ const MyAppointments = () => {
               )}
 
               {/* CANCELLED */}
-              {item.cancelled && (
+              {item.cancelled && !item.isCompleted &&(
                 <button
                   disabled
                   className="border border-gray-300 bg-gray-100 text-red-700
@@ -199,6 +199,9 @@ const MyAppointments = () => {
                 >
                   Appointment Cancelled
                 </button>
+              )}
+              {item.isCompleted && (
+                <button className="sm:min-w-48 py-2 border border-green-500 rounded text-green-500">Completed</button>
               )}
             </div>
           </div>
