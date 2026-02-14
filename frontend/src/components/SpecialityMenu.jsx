@@ -1,20 +1,60 @@
 import React from 'react'
 import { specialityData } from '../assets/assets'
 import { Link } from 'react-router-dom'
+
 const SpecialityMenu = () => {
   return (
-    <div className='flex flex-col items-center gap-4 py-16 text-gray-800 ' id='speciality'>
-            <h1 className='text-3xl font-medium'>Find by Speciality</h1>
-            <p className='sm:w-1/3 text-center text-sm'>Simply browse through our extensive list of trusted doctors, Schedule your appointment hassle-free.</p>
-            <div className='flex sm:justify-center gap-4 pt-5 w-full overflow-scroll no-scrollbar overflow-y-scroll'>
-                {specialityData.map((item,index)=>(
-                    <Link onClick={()=>scrollTo(0,0)}className='flex flex-col items-center text-xs cursor-pointer shrink-0 hover:translate-y-2.5 transition-all duration-500' key={index} to={`/doctors/${item.speciality}`}>
-                        <img className='w-16 sm:w-24 mb-2' src={item.image} alt="" />
-                        <p>{item.speciality}</p>
+    <div
+      id="speciality"
+      className="flex flex-col items-center gap-4 py-20 text-gray-800"
+    >
+      {/* ================= HEADING ================= */}
+      <div className="text-center max-w-xl px-4">
+        <h1 className="text-3xl font-semibold">
+          Find by Speciality
+        </h1>
+        <p className="text-sm text-gray-500 mt-2">
+          Simply browse through our extensive list of trusted doctors,
+          schedule your appointment hassle-free.
+        </p>
+      </div>
 
-                    </Link>
-                ))}
-            </div>
+      {/* ================= SPECIALITY SCROLLER ================= */}
+      <div
+        className="
+          w-full mt-8
+          flex gap-6 px-6
+          overflow-x-auto no-scrollbar
+          sm:justify-center
+        "
+      >
+        {specialityData.map((item, index) => (
+          <Link
+            key={index}
+            to={`/doctors/${item.speciality}`}
+            onClick={() => scrollTo(0, 0)}
+            className="
+              flex flex-col items-center
+              min-w-24 sm:min-w-30
+              bg-white rounded-3xl
+              p-4 sm:p-5
+              shadow-sm hover:shadow-lg
+              transition-all duration-300
+              hover:-translate-y-2
+              cursor-pointer
+            "
+          >
+            <img
+              className="w-14 sm:w-20 mb-3"
+              src={item.image}
+              alt={item.speciality}
+            />
+            <p className="text-xs sm:text-sm font-medium text-gray-700 text-center">
+              {item.speciality}
+            </p>
+          </Link>
+        ))}
+      </div>
     </div>
   )
 }

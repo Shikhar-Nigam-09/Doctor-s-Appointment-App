@@ -47,12 +47,6 @@ const SoftSelect = ({ label, options, ...props }) => (
 /* ---------------- Main Component ---------------- */
 
 const AddDoctor = () => {
-
-
-
-
-    
-
   const [docImg, setDocImg] = useState(false)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -69,33 +63,35 @@ const AddDoctor = () => {
 
   const onSubmitHandler = async (event) => {
     event.preventDefault()
- try{
-    if (!docImg) {
-      toast.error('Image not selected')
-      return
-    }
-    const formData=new FormData()
-    formData.append('image',docImg)
-    formData.append('name',name)
-    formData.append('email',email)
-    formData.append('password',password)
 
-    formData.append('experience',experience)
-    formData.append('fees',fees)
-    formData.append('about',about)
-    formData.append('speciality',speciality)
-    formData.append('degree',degree)
-    formData.append('address',JSON.stringify({line1:address1,line2:address2}))
-    
+    try {
+      if (!docImg) {
+        toast.error('Image not selected')
+        return
+      }
 
-    formData.forEach((value,key)=>{
-        console.log(`${key}: ${value}`);
-    })
+      const formData = new FormData()
+      formData.append('image', docImg)
+      formData.append('name', name)
+      formData.append('email', email)
+      formData.append('password', password)
+      formData.append('experience', experience)
+      formData.append('fees', fees)
+      formData.append('about', about)
+      formData.append('speciality', speciality)
+      formData.append('degree', degree)
+      formData.append(
+        'address',
+        JSON.stringify({ line1: address1, line2: address2 })
+      )
 
-    const {data}=await axios.post(backendURL+'/api/admin/add-doctor',formData,{headers:{ atoken: aToken}})
+      const { data } = await axios.post(
+        backendURL + '/api/admin/add-doctor',
+        formData,
+        { headers: { atoken: aToken } }
+      )
 
-    if(data.success)
-    {
+      if (data.success) {
         toast.success(data.message)
         setDocImg(false)
         setName('')
@@ -106,36 +102,32 @@ const AddDoctor = () => {
         setAbout('')
         setFees('')
         setDegree('')
-
-    }else{
+      } else {
         toast.error(data.message)
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error(error.response?.data?.message || 'Something went wrong')
     }
-}
-catch(error)
-{
-    
-    console.log(error)
-    toast.error(
-    error.response?.data?.message || 'Something went wrong'
-  )
-}
-    // backend logic will be added later
   }
 
   return (
-    <div className="w-full min-h-screen bg-[#F6F7FB] p-6">
-
+    <div className="w-full min-h-screen bg-[#F6F7FB] px-4 py-6 sm:p-6">
       <h1 className="text-xl font-semibold text-gray-800 mb-6">
         Add Doctor
       </h1>
 
       <form
         onSubmit={onSubmitHandler}
-        className="bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] p-8 max-w-5xl"
+        className="
+          bg-white rounded-2xl
+          shadow-[0_8px_30px_rgba(0,0,0,0.04)]
+          p-6 sm:p-8
+          max-w-5xl mx-auto
+        "
       >
-
         {/* Upload */}
-        <div className="flex items-center gap-5 mb-10">
+        <div className="flex flex-col sm:flex-row items-center gap-5 mb-10">
           <label
             htmlFor="doc-img"
             className="
@@ -159,7 +151,7 @@ catch(error)
             onChange={(e) => setDocImg(e.target.files[0])}
           />
 
-          <div>
+          <div className="text-center sm:text-left">
             <p className="text-sm font-medium text-gray-700">
               Upload doctor picture
             </p>
@@ -171,7 +163,6 @@ catch(error)
 
         {/* Form Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
-
           <div className="space-y-5">
             <SoftInput
               label="Your name"
@@ -267,7 +258,8 @@ catch(error)
         <button
           type="submit"
           className="
-            mt-8 bg-[#5f6FFF] text-white
+            mt-8 w-full sm:w-auto
+            bg-[#5f6FFF] text-white
             px-10 py-2.5 rounded-full text-sm font-medium
             shadow-md hover:shadow-lg hover:opacity-80
             transition
@@ -275,7 +267,6 @@ catch(error)
         >
           Add doctor
         </button>
-
       </form>
     </div>
   )

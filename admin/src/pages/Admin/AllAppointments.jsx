@@ -42,15 +42,15 @@ const AllAppointments = () => {
   };
 
   return (
-    <div className="w-full max-w-6xl m-5">
+    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-4">
       <p className="mb-4 text-lg font-medium text-gray-800">
         All Appointments
       </p>
 
-      <div className="bg-white border rounded-xl shadow-sm text-sm max-h-[80vh] overflow-y-auto">
-        {/* HEADER */}
+      <div className="bg-white rounded-xl shadow-sm text-sm max-h-[80vh] overflow-y-auto">
+        {/* ================= DESKTOP HEADER ================= */}
         <div className="hidden sm:grid grid-cols-[0.5fr_3fr_1fr_3fr_3fr_1fr_1fr]
-                        gap-3 py-3 px-6 border-b bg-gray-50
+                        gap-3 py-3 px-6 bg-gray-50
                         font-medium text-gray-600 sticky top-0 z-10">
           <p>#</p>
           <p>Patient</p>
@@ -61,16 +61,20 @@ const AllAppointments = () => {
           <p className="text-center">Actions</p>
         </div>
 
-        {/* ROWS */}
+        {/* ================= ROWS ================= */}
         {appointments.map((item, index) => (
           <div
             key={item._id}
-            className="flex flex-col sm:grid sm:grid-cols-[0.5fr_3fr_1fr_3fr_3fr_1fr_1fr]
-                       gap-3 items-start sm:items-center py-4 px-6 border-b
-                       text-gray-500 hover:bg-gray-50 transition-all duration-200"
+            className="flex flex-col sm:grid
+                       sm:grid-cols-[0.5fr_3fr_1fr_3fr_3fr_1fr_1fr]
+                       gap-4 sm:gap-3
+                       py-4 px-4 sm:px-6
+                       border-b last:border-b-0
+                       text-gray-600 hover:bg-gray-50
+                       transition"
           >
-            {/* INDEX */}
-            <p className="max-sm:hidden">{index + 1}</p>
+            {/* INDEX (desktop only) */}
+            <p className="hidden sm:block">{index + 1}</p>
 
             {/* PATIENT */}
             <div className="flex items-center gap-3">
@@ -79,25 +83,30 @@ const AllAppointments = () => {
                 src={item.userData.image}
                 alt=""
               />
-              <p className="font-medium text-gray-800">
-                {item.userData.name}
-              </p>
+              <div>
+                <p className="font-medium text-gray-800">
+                  {item.userData.name}
+                </p>
+                <p className="text-xs text-gray-400 sm:hidden">
+                  Age: {calculateAge(item.userData.dob)}
+                </p>
+              </div>
             </div>
 
-            {/* AGE */}
-            <p className="max-sm:hidden">
+            {/* AGE (desktop only) */}
+            <p className="hidden sm:block">
               {calculateAge(item.userData.dob)}
             </p>
 
             {/* DATE */}
-            <p>
+            <p className="text-sm">
               {item.slotDate}, {item.slotTime}
             </p>
 
             {/* DOCTOR */}
             <div className="flex items-center gap-3">
               <img
-                className="w-9 h-9 rounded-full bg-gray-200"
+                className="w-9 h-9 rounded-full bg-gray-200 object-cover"
                 src={item.docData.image}
                 alt=""
               />
@@ -107,26 +116,30 @@ const AllAppointments = () => {
             </div>
 
             {/* FEES */}
-            <p className="font-medium">
+            <p className="font-medium text-gray-800">
               {currency}{item.amount}
             </p>
 
             {/* ACTION */}
-            <div className="flex justify-center">
+            <div className="flex sm:justify-center">
               {item.cancelled ? (
                 <span className="text-red-500 font-medium text-sm">
                   Cancelled
                 </span>
-              ) : item.isCompleted ? (<p className="text-green-500 font-medium text-sm">Completed </p>) :(
+              ) : item.isCompleted ? (
+                <span className="text-green-500 font-medium text-sm">
+                  Completed
+                </span>
+              ) : (
                 <button
                   disabled={loadingId === item._id}
                   onClick={() => cancelAppointment(item._id)}
-                  className={`w-9 h-9 flex items-center justify-center
-                    rounded-full border transition-all duration-200
+                  className={`w-10 h-10 flex items-center justify-center
+                    rounded-full transition
                     ${
                       loadingId === item._id
                         ? "opacity-50 cursor-not-allowed"
-                        : "hover:bg-red-50 hover:border-red-400"
+                        : "hover:bg-red-50"
                     }`}
                   title="Cancel appointment"
                 >

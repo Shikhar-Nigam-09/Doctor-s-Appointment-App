@@ -3,7 +3,6 @@ import { AppContext } from '../context/AppContext'
 import { useNavigate } from 'react-router-dom'
 
 const RelatedDoctors = ({ speciality, docId }) => {
-
   const { doctors } = useContext(AppContext)
   const [relDocs, setRelDocs] = useState([])
   const navigate = useNavigate()
@@ -18,35 +17,53 @@ const RelatedDoctors = ({ speciality, docId }) => {
   }, [speciality, docId, doctors])
 
   return (
-    <div className="mt-16">
+    <div className="mt-20">
 
-      {/* Heading */}
-      <p className="text-xl font-medium text-center">
-        Related Doctors
-      </p>
-      <p className="text-sm text-center text-gray-600 mt-1 mb-6">
-        Simply browse through our extensive list of trusted doctors.
-      </p>
+      {/* ================= HEADING ================= */}
+      <div className="text-center mb-10">
+        <p className="text-2xl font-semibold text-gray-800">
+          Related Doctors
+        </p>
+        <p className="text-sm text-gray-500 mt-1">
+          Simply browse through our extensive list of trusted doctors.
+        </p>
+      </div>
 
-      {/* Doctors Grid */}
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-6">
+      {/* ================= DOCTORS GRID ================= */}
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-6">
         {relDocs.slice(0, 5).map((item) => (
           <div
             key={item._id}
-            onClick={() => {navigate(`/appointment/${item._id}`),scrollTo(0,0)}}
-            className="border border-blue-200 rounded-xl overflow-hidden cursor-pointer
-            hover:-translate-y-2 hover:shadow-lg transition-all duration-300"
+            onClick={() => {
+              navigate(`/appointment/${item._id}`)
+              scrollTo(0, 0)
+            }}
+            className="
+              bg-white rounded-3xl overflow-hidden
+              shadow-sm hover:shadow-lg
+              transition-all duration-300
+              cursor-pointer hover:-translate-y-2
+            "
           >
-            <img className="bg-blue-50 w-full" src={item.image} alt={item.name} />
+            <img
+              className="w-full h-44 object-cover object-top bg-blue-50"
+              src={item.image}
+              alt={item.name}
+            />
 
-            <div className="p-4">
-              <div className="flex items-center gap-2 text-sm text-green-500">
+            <div className="p-5">
+              {/* Availability */}
+              <div className="flex items-center gap-2 text-sm text-green-600 mb-1">
                 <span className="w-2 h-2 bg-green-500 rounded-full"></span>
                 <p>Available</p>
               </div>
 
-              <p className="font-medium mt-1">{item.name}</p>
-              <p className="text-sm text-gray-600">{item.speciality}</p>
+              <p className="font-semibold text-gray-800">
+                {item.name}
+              </p>
+              <p className="text-sm text-gray-500">
+                {item.speciality}
+              </p>
             </div>
           </div>
         ))}

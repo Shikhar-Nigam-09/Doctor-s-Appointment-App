@@ -2,12 +2,9 @@ import React, { useContext, useEffect, useState } from "react"
 import { AppContext } from "../context/AppContext"
 import axios from "axios"
 import { toast } from "react-toastify"
-import { useNavigate } from "react-router-dom"
 
 const MyAppointments = () => {
   const { backendURL, token, getDoctorsData } = useContext(AppContext)
-  const navigate = useNavigate()
-
   const [appointments, setAppointments] = useState([])
 
   // ================= FETCH APPOINTMENTS =================
@@ -49,7 +46,7 @@ const MyAppointments = () => {
     }
   }
 
-  // ================= RAZORPAY POPUP =================
+  // ================= RAZORPAY =================
   const initPay = (order, appointmentId) => {
     const options = {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID,
@@ -58,7 +55,6 @@ const MyAppointments = () => {
       name: "Doctor Appointment",
       description: "Appointment Payment",
       order_id: order.id,
-
       handler: async function (response) {
         try {
           const verify = await axios.post(
@@ -79,7 +75,6 @@ const MyAppointments = () => {
             toast.error("Payment verification failed")
           }
         } catch (err) {
-          console.log(err)
           toast.error("Payment verification error")
         }
       }
@@ -104,108 +99,145 @@ const MyAppointments = () => {
         toast.error(data.message)
       }
     } catch (error) {
-      console.log(error)
       toast.error("Unable to start payment")
     }
   }
 
-  // ================= EFFECT =================
   useEffect(() => {
     if (token) getUserAppointments()
   }, [token])
 
   // ================= UI =================
   return (
-    <div className="md:mx-10 mt-10">
-      <p className="text-2xl font-medium text-gray-800 mb-6">
-        My Appointments
-      </p>
+    <div className="min-h-screen bg-[#F6F7FB] py-8">
+      <div className="max-w-5xl mx-auto px-4">
 
-      <div className="space-y-6">
-        {appointments.map((item) => (
-          <div
-            key={item._id}
-            className="flex flex-col sm:flex-row gap-6 items-start sm:items-center
-                       border rounded-xl p-6 bg-white"
-          >
-            {/* Doctor Info */}
-            <div className="flex gap-4 flex-1">
-              <img
-                className="w-24 h-24 rounded-lg object-cover bg-blue-50"
-                src={item.docData.image}
-                alt={item.docData.name}
-              />
+        <p className="text-2xl font-semibold text-gray-800 mb-6">
+          My Appointments
+        </p>
 
-              <div className="text-sm text-gray-600">
-                <p className="text-base font-medium text-gray-800">
-                  {item.docData.name}
-                </p>
-                <p className="mb-2">{item.docData.speciality}</p>
+        <div className="space-y-6">
+          {appointments.map((item) => (
+            <div
+              key={item._id}
+              className="
+                bg-white rounded-3xl p-5 sm:p-6
+                shadow-sm hover:shadow-md
+                transition
+                flex flex-col sm:flex-row
+                gap-6
+              "
+            >
+              {/* ================= DOCTOR INFO ================= */}
+              <div className="flex gap-4 flex-1">
+                <img
+                  className="w-24 h-24 rounded-2xl object-cover bg-blue-50"
+                  src={item.docData.image}
+                  alt={item.docData.name}
+                />
 
-                <p className="font-medium text-gray-700">Address:</p>
-                <p>{item.docData.address.line1}</p>
-                <p>{item.docData.address.line2}</p>
+                <div className="text-sm text-gray-600 space-y-1">
+                  <p className="text-base font-semibold text-gray-800">
+                    {item.docData.name}
+                  </p>
+                  <p>{item.docData.speciality}</p>
 
-                <p className="mt-2">
-                  <span className="font-medium text-gray-700">
-                    Date & Time:
-                  </span>{" "}
-                  {item.slotDate} | {item.slotTime}
-                </p>
+                  <div className="mt-2 bg-[#F8F9FD] rounded-xl p-3">
+                    <p className="font-medium text-gray-700 text-xs mb-1">
+                      Address
+                    </p>
+                    <p>{item.docData.address.line1}</p>
+                    <p>{item.docData.address.line2}</p>
+                  </div>
+
+                  <p className="mt-2">
+                    <span className="font-medium text-gray-700">
+                      Date & Time:
+                    </span>{" "}
+                    {item.slotDate} | {item.slotTime}
+                  </p>
+                </div>
+              </div>
+
+              {/* ================= ACTIONS ================= */}
+              <div className="flex flex-col gap-3 sm:min-w-45">
+
+                {item.payment && !item.isCompleted && (
+                  <button
+                    disabled
+                    className="
+                      bg-green-100 text-green-700
+                      py-2 rounded-full text-sm
+                      cursor-not-allowed
+                    "
+                  >
+                    Paid
+                  </button>
+                )}
+
+                {!item.cancelled && !item.payment && !item.isCompleted && (
+                  <button
+                    onClick={() => appointmentRazorpay(item._id)}
+                    className="
+                      bg-[#F6F7FB] text-gray-700
+                      py-2 rounded-full text-sm
+                      hover:bg-[#5f6FFF] hover:text-white
+                      transition
+                    "
+                  >
+                    Pay Now
+                  </button>
+                )}
+
+                {!item.cancelled && !item.payment && !item.isCompleted && (
+                  <button
+                    onClick={() => cancelAppointment(item._id)}
+                    className="
+                      bg-[#F6F7FB] text-gray-700
+                      py-2 rounded-full text-sm
+                      hover:bg-red-500 hover:text-white
+                      transition
+                    "
+                  >
+                    Cancel Appointment
+                  </button>
+                )}
+
+                {item.cancelled && !item.isCompleted && (
+                  <button
+                    disabled
+                    className="
+                      bg-red-100 text-red-600
+                      py-2 rounded-full text-sm
+                      cursor-not-allowed
+                    "
+                  >
+                    Appointment Cancelled
+                  </button>
+                )}
+
+                {item.isCompleted && (
+                  <button
+                    disabled
+                    className="
+                      bg-green-100 text-green-600
+                      py-2 rounded-full text-sm
+                      cursor-not-allowed
+                    "
+                  >
+                    Completed
+                  </button>
+                )}
               </div>
             </div>
+          ))}
 
-            {/* ACTIONS */}
-            <div className="flex flex-col gap-3 min-w-40">
-              {/* PAID */}
-              {item.payment && !item.isCompleted && (
-                <button
-                  disabled
-                  className="border border-green-300 bg-green-100 text-green-700
-                             py-2 rounded-lg text-sm cursor-not-allowed"
-                >
-                  Paid
-                </button>
-              )}
-
-              {/* PAY NOW */}
-              {!item.cancelled && !item.payment && !item.isCompleted && (
-                <button
-                  onClick={() => appointmentRazorpay(item._id)}
-                  className="border border-gray-300 text-gray-600 py-2 rounded-lg text-sm
-                             transition-all hover:bg-[#5f6FFF] hover:text-white"
-                >
-                  Pay Now
-                </button>
-              )}
-
-              {/* CANCEL */}
-              {!item.cancelled && !item.payment && !item.isCompleted &&(
-                <button
-                  onClick={() => cancelAppointment(item._id)}
-                  className="border border-gray-300 text-gray-600 py-2 rounded-lg text-sm
-                             transition-all hover:bg-red-500 hover:text-white"
-                >
-                  Cancel appointment
-                </button>
-              )}
-
-              {/* CANCELLED */}
-              {item.cancelled && !item.isCompleted &&(
-                <button
-                  disabled
-                  className="border border-gray-300 bg-gray-100 text-red-700
-                             py-2 rounded-lg text-sm cursor-not-allowed"
-                >
-                  Appointment Cancelled
-                </button>
-              )}
-              {item.isCompleted && (
-                <button className="sm:min-w-48 py-2 border border-green-500 rounded text-green-500">Completed</button>
-              )}
-            </div>
-          </div>
-        ))}
+          {appointments.length === 0 && (
+            <p className="text-center text-gray-400 py-20">
+              No appointments found
+            </p>
+          )}
+        </div>
       </div>
     </div>
   )
